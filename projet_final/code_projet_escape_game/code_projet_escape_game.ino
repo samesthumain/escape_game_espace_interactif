@@ -4,16 +4,18 @@
 
 #include <M5Atom.h>
 
-CRGB pixel[1];
-//CRGB mesPixels[1];
+CRGB pixel;
+CRGB mesPixels[0];
 
 unsigned long monChronoMessages;
 unsigned long monChronoMessageDeux;
 
 int lightsOn;
 
+/*
 #define LONGUEUR 30
 CRGB maBandeDel[LONGUEUR];
+*/
 
 #include <MicroOscSlip.h>
 MicroOscSlip<128> monOsc(&Serial);
@@ -27,7 +29,7 @@ VL53L0X myTOF;
 
 int maLectureKeyPrecedente;
 int maLectureKeyPrecedenteCool;
-bool etatPlay = false;
+//bool etatPlay = false;
 bool etatPlayCool;
 
 int numberOfClick;
@@ -38,27 +40,27 @@ int green;
 void setup() {
   // put your setup code here, to run once:
   M5.begin(false, false, false);
-  FastLED.addLeds<WS2812, DATA_PIN, GRB>(pixel, 1);  // Ajouter le pixel du M5Atom à FastLED
+  FastLED.addLeds<WS2812, DATA_PIN, GRB>(&pixel, 1);  // Ajouter le pixel du M5Atom à FastLED
   //FastLED.addLeds<WS2812, 26, RGB>(maBandeDel, LONGUEUR);
   Serial.begin(115200);
 
   unsigned long chronoDepart = millis();
   while (millis() - chronoDepart < 5000) {
-    pixel[1] = CRGB(255, 255, 255);
+    pixel = CRGB(255, 255, 255);
     FastLED.show();
     delay(100);
 
-    pixel[1] = CRGB(0, 0, 0);
+    pixel = CRGB(0, 0, 0);
     FastLED.show();
     delay(100);
   }
 
-  pixel[1] = CRGB(0, 0, 0);
+  pixel = CRGB(0, 0, 0);
   FastLED.show();
 
   Wire.begin();
   myPbHub.begin();
-  myPbHub.setPixelCount(CHAN_KEY, 1);
+  /*myPbHub.setPixelCount(CHAN_KEY, 1);*/
 
   myTOF.init();
   myTOF.setTimeout(500);
@@ -66,13 +68,13 @@ void setup() {
 
 
   // Animation de démarrage
-  /*while (millis() < 5000) {
+  while (millis() < 5000) {
     mesPixels[0] = CHSV((millis() / 5) % 255, 255, 255 - (millis() * 255 / 5000));
     FastLED.show();
     delay(50);
   }
   mesPixels[0] = CRGB(0, 0, 0);
-  FastLED.show();*/
+  FastLED.show();
 
 
    myPbHub.setPixelColor(CHAN_KEY , 0, 255 , 255, 255);
@@ -108,17 +110,17 @@ void loop() {
       
       if (maLectureKey == 0) {
         //myPbHub.setPixelColor( CHAN_KEY, 0, random( 0 , 256 ) , random( 0 , 256 ), random( 0 , 256 ));
-        if(etatPlay == false){
+        //if(etatPlay == false){
           monOsc.sendFloat("/key", 1);
-          etatPlay = true;
-        }else{
-          monOsc.sendFloat("/key", 0);
-          etatPlay = false;
-        }
+          //etatPlay = true;
+        //}else{
+          //monOsc.sendFloat("/key", 0);
+          //etatPlay = false;
+        //}
         
         /*monOsc.sendFloat("/vkb_midi/@/note/52", 64);
         monOsc.sendFloat("/vkb_midi/@/note/55", 64);*/
-      }else{
+      //}else{
         //monOsc.sendFloat("/vkb_midi/@/note/48", 0);
         /*monOsc.sendFloat("/vkb_midi/@/note/52", 0);
         monOsc.sendFloat("/vkb_midi/@/note/55", 0);*/
@@ -145,9 +147,11 @@ void loop() {
           green = 0;
         }
         if (numberOfClick == 30) {
+          /*
           for (int i=0; i < LONGUEUR; i++) {
             //maBandeDel[i] = CRGB(0, 0, 0);
           }
+          */
           //FastLED.show();
           numberOfClick = 0;
           red = 0;
@@ -199,12 +203,12 @@ void loop() {
       }*/
       //monOsc.sendInt("/vkb_midi/9/cc/13", pos);
       //myPbHub.setPixelColor(channel , CHAN_KEY, 255 , 255, 255);
-    }else{
+    }/*else{
       monOsc.sendInt("/appear", 0);
       monOsc.sendInt("/static", 1);
 
       //monOsc.sendInt("/vkb_midi/9/cc/13", 0);
-    }
+    }*/
     
     
 
