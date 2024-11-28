@@ -5,7 +5,7 @@
 #include <M5Atom.h>
 
 CRGB pixel[1];
-CRGB mesPixels[1];
+//CRGB mesPixels[1];
 
 unsigned long monChronoMessages;
 unsigned long monChronoMessageDeux;
@@ -66,13 +66,13 @@ void setup() {
 
 
   // Animation de démarrage
-  while (millis() < 5000) {
+  /*while (millis() < 5000) {
     mesPixels[0] = CHSV((millis() / 5) % 255, 255, 255 - (millis() * 255 / 5000));
     FastLED.show();
     delay(50);
   }
   mesPixels[0] = CRGB(0, 0, 0);
-  FastLED.show();
+  FastLED.show();*/
 
 
    myPbHub.setPixelColor(CHAN_KEY , 0, 255 , 255, 255);
