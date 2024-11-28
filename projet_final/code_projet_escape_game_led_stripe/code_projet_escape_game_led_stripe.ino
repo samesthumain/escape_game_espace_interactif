@@ -11,7 +11,7 @@ unsigned long monChronoMessageDeux; //commence automatiquement à 0
 
 int lightsOn;
 
-#define LONGUEUR 30
+#define LONGUEUR 32
 CRGB maBandeDel[LONGUEUR];
 
 #include <MicroOscSlip.h>
