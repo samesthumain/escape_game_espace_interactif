@@ -62,11 +62,13 @@ void setup() {
   red = 0;
   green = 100;
 
+  Wire.begin();
+
   myTOF.init();
   myTOF.setTimeout(500);
   myTOF.startContinuous();
 
-  Wire.begin();
+  
   myPbHub.begin();
   myPbHub.setPixelCount(CHAN_KEY, 1);
 }
@@ -120,8 +122,8 @@ void loop() {
       if (maLectureKey == 0) {
         monOsc.sendInt("/key", maLectureKey);
         etatPlay = !etatPlay;
-        monOsc.sendInt("/numberOfClick", numberOfClick);
-        numberOfClick += 1;
+
+        
         /*
         maBandeDel[numberOfClick] = CRGB(red, green, 0);
         FastLED.show();
@@ -158,10 +160,14 @@ void loop() {
 
     if (maLectureKeyPrecedenteCool != maLectureKeyCool) {
       if (maLectureKeyCool == 0) {
-        monOsc.sendInt("/key", maLectureKeyCool);
+        monOsc.sendInt("/keyCount", maLectureKeyCool);
         etatPlay = !etatPlay;
         monOsc.sendInt("/numberOfClick", numberOfClick);
         numberOfClick += 1;
+
+        if (numberOfClick == 30) {
+          numberOfClick = 0;
+        }
         /*
         maBandeDel[numberOfClick] = CRGB(red, green, 0);
         FastLED.show();
