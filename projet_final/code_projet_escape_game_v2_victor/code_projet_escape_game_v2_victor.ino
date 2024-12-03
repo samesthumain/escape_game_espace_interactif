@@ -202,6 +202,14 @@ void loop() {
 
   }
 
+  if (millis() - monChronoMessageDeux >= 7000) {
+    monChronoMessageDeux = millis();
+    if (numberOfClick != 12 || numberOfClick == 0){
+      monOsc.sendInt("/resetClick", 1);
+      monOsc.sendInt("/numberOfClick", 0);
+      numberOfClick = 0;
+    }
+  }
 
   /*if (millis() - monChronoMessageDeux >= 600) {
     monChronoMessageDeux = millis();

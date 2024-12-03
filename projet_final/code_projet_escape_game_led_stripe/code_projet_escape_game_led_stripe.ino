@@ -58,6 +58,7 @@ void setup() {
   myPbHub.begin();
   myPbHub.setPixelCount(CHAN_KEY, 1);
 }
+
 /*
 void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
   if (oscMessage.checkOscAddress("/rgb")) {
@@ -69,13 +70,37 @@ void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
   }
 }
 */
+
+void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
+  if (oscMessage.checkOscAddress("/counter")) {
+    int counter = oscMessage.nextAsInt();
+    monOsc.sendInt("/counter", counter);
+    maBandeDel[counter] = CRGB(0, 100, 0);
+  }
+  if (oscMessage.checkOscAddress("/resetClick")) {
+    int reset = oscMessage.nextAsInt();
+    monOsc.sendInt("/counterReset", reset);
+    if (reset == 1) {
+      for (int i=0; i < LONGUEUR; i++) {
+        maBandeDel[i] = CRGB(0, 0, 0);
+      }
+    }
+  }
+}
+
+
 void loop() {
   // put your main code here, to run repeatedly:
   M5.update();
-  //monOsc.onOscMessageReceived(maReceptionMessageOsc);
+  
 
   if (millis() - monChronoMessage >= 25) {
     monChronoMessage = millis();
+
+    monOsc.onOscMessageReceived(maReceptionMessageOsc);
+
+    
+
     // à chaque 50ms
     bool maLectureBouton = M5.Btn.isPressed();
     //Serial.println(maLectureBouton);
@@ -131,7 +156,8 @@ void loop() {
   }
 
 
-  if (millis() - monChronoMessageDeux >= 600) {
+  
+  /*if (millis() - monChronoMessageDeux >= 600) {
     monChronoMessageDeux = millis();
     //lightsOn = !lightsOn;
     
@@ -146,6 +172,6 @@ void loop() {
       }
       FastLED.show();
     }
-  }
+  }*/
 
 }
