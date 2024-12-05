@@ -8,6 +8,7 @@ unsigned long monChronoMessageDeux; //commence automatiquement à 0
 #define CHAN_KEY 3
 #define CHAN_ANGLE 1
 #define CHAN_KEY_COOL 2
+#define CHAN_KEY_SUBMIT 4
 
 //#define MA_BROCHE_ANGLE 32 //const int MA_BROCHE_ANGLE = 32;
 
@@ -27,8 +28,15 @@ M5_PbHub myPbHub;
 #include <VL53L0X.h>
 VL53L0X myTOF;
 
+#include "Unit_Encoder.h"
+Unit_Encoder myEncoder;
+ 
+int myEncoderPreviousRotation;
+
 int maLectureKeyPrecedente;
 int maLectureKeyPrecedenteCool;
+int maLectureKeyPrecedenteSubmit;
+
 int etatPlay;
 int numberOfClick;
 int red;
@@ -64,6 +72,8 @@ void setup() {
 
   Wire.begin();
 
+  myEncoder.begin(); // Démarrer la connexion avec l'encodeur
+
   myTOF.init();
   myTOF.setTimeout(500);
   myTOF.startContinuous();
@@ -71,6 +81,9 @@ void setup() {
   
   myPbHub.begin();
   myPbHub.setPixelCount(CHAN_KEY, 1);
+
+  monOsc.sendInt("/boundesStart", 1600);
+  monOsc.sendInt("/boundesEnd", 2500);
 }
 /*
 void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
@@ -109,9 +122,12 @@ void loop() {
     
     uint16_t millimetres = myTOF.readRangeContinuousMillimeters();
     //int pos =  millimetres/ 500.0 * 127;
-    int pos = map(millimetres, 0, 1200, 0, 127);
+    //int pos = map(millimetres, 0, 1200, 0, 127);
     int amount = 0;
-    if(millimetres <= 1200){
+    monOsc.sendInt("/tof", millimetres);
+    if(millimetres <= 500){
+      monOsc.sendInt("/appear", 0);
+    }else{
       monOsc.sendInt("/appear", 1);
     }
     
@@ -162,10 +178,10 @@ void loop() {
       if (maLectureKeyCool == 0) {
         monOsc.sendInt("/keyCount", maLectureKeyCool);
         etatPlay = !etatPlay;
-        monOsc.sendInt("/numberOfClick", numberOfClick);
         numberOfClick += 1;
+        monOsc.sendInt("/numberOfClick", numberOfClick);
 
-        if (numberOfClick == 30) {
+        if (numberOfClick == 32) {
           numberOfClick = 0;
         }
         /*
@@ -200,8 +216,49 @@ void loop() {
     }
     maLectureKeyPrecedenteCool = maLectureKeyCool;
 
+
+    int maLectureKeySubmit = myPbHub.digitalRead(CHAN_KEY_SUBMIT);
+    if (maLectureKeyPrecedenteSubmit != maLectureKeySubmit) {
+      if (maLectureKeySubmit == 0) {
+        int randomNumber = random(1200, 3000);
+        int randomNumberTwo = randomNumber + 900;
+        if (numberOfClick != 12 || numberOfClick == 0){
+          if (numberOfClick == 0) {
+            monOsc.sendInt("/echec", 0);
+          }
+          monOsc.sendInt("/boundesStart", randomNumber);
+          monOsc.sendInt("/boundesEnd", randomNumberTwo);
+          monOsc.sendInt("/resetClick", 1);
+          monOsc.sendInt("/numberOfClick", 0);
+          monOsc.sendInt("/succes", 0);
+          monOsc.sendInt("/echec", 1);
+          numberOfClick = 0;
+        } else if (numberOfClick == 12) {
+          monOsc.sendInt("/boundesStart", randomNumber);
+          monOsc.sendInt("/boundesEnd", randomNumberTwo);
+          monOsc.sendInt("/succes", 1);
+          monOsc.sendInt("/numberOfClick", 0);
+          monOsc.sendInt("/echec", 0);
+          numberOfClick = 0;
+        }
+      }
+    }
+    maLectureKeyPrecedenteSubmit = maLectureKeySubmit;
+
+    
   }
 
+
+  /*if (millis() - monChronoMessageDeux >= 7000) {
+    monChronoMessageDeux = millis();
+    if (numberOfClick != 12 || numberOfClick == 0){
+      monOsc.sendInt("/resetClick", 1);
+      monOsc.sendInt("/numberOfClick", 0);
+      numberOfClick = 0;
+    }
+  }*/
+
+  /*
   if (millis() - monChronoMessageDeux >= 7000) {
     monChronoMessageDeux = millis();
     if (numberOfClick != 12 || numberOfClick == 0){
@@ -209,7 +266,7 @@ void loop() {
       monOsc.sendInt("/numberOfClick", 0);
       numberOfClick = 0;
     }
-  }
+  }*/
 
   /*if (millis() - monChronoMessageDeux >= 600) {
     monChronoMessageDeux = millis();

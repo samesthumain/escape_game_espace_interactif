@@ -11,14 +11,11 @@ unsigned long monChronoMessageDeux; //commence automatiquement à 0
 
 int lightsOn;
 
-#define LONGUEUR 32
+#define LONGUEUR 30
 CRGB maBandeDel[LONGUEUR];
 
 #include <MicroOscSlip.h>
 MicroOscSlip<128> monOsc(&Serial);
-
-#include <M5_PbHub.h>
-M5_PbHub myPbHub;
 
 int maLectureKeyPrecedente;
 int etatPlay;
@@ -74,9 +71,11 @@ void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
 void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
   if (oscMessage.checkOscAddress("/counter")) {
     int counter = oscMessage.nextAsInt();
-    monOsc.sendInt("/counter", counter);
+    monOsc.sendInt("/compteurLight", counter);
     maBandeDel[counter] = CRGB(0, 100, 0);
+    FastLED.show();
   }
+  /*
   if (oscMessage.checkOscAddress("/resetClick")) {
     int reset = oscMessage.nextAsInt();
     monOsc.sendInt("/counterReset", reset);
@@ -86,6 +85,7 @@ void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
       }
     }
   }
+  */
 }
 
 
@@ -104,6 +104,7 @@ void loop() {
     // à chaque 50ms
     bool maLectureBouton = M5.Btn.isPressed();
     //Serial.println(maLectureBouton);
+    }
     
     //int maLectureAngle = analogRead(MA_BROCHE_ANGLE);
     /*
@@ -153,7 +154,7 @@ void loop() {
     }
     maLectureKeyPrecedente = maLectureKey;
 */
-  }
+  
 
 
   
