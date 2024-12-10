@@ -5,7 +5,7 @@ CRGB monPixelAtom[1];  // int bob = 10;
 unsigned long monChronoMessage; //commence automatiquement à 0
 unsigned long monChronoMessageDeux; //commence automatiquement à 0
 
-#define CHAN_KEY 3
+//#define CHAN_KEY 3
 #define CHAN_ANGLE 1
 #define CHAN_KEY_COOL 2
 #define CHAN_KEY_SUBMIT 4
@@ -80,7 +80,7 @@ void setup() {
 
   
   myPbHub.begin();
-  myPbHub.setPixelCount(CHAN_KEY, 1);
+  //myPbHub.setPixelCount(CHAN_KEY, 1);
 
   monOsc.sendInt("/boundesStart", 1600);
   monOsc.sendInt("/boundesEnd", 2500);
@@ -125,13 +125,13 @@ void loop() {
     //int pos = map(millimetres, 0, 1200, 0, 127);
     int amount = 0;
     monOsc.sendInt("/tof", millimetres);
-    if(millimetres <= 500){
+    if(millimetres <= 300){
       monOsc.sendInt("/appear", 0);
     }else{
       monOsc.sendInt("/appear", 1);
     }
     
-
+    /*
     int maLectureKey = myPbHub.digitalRead(CHAN_KEY);
 
     if (maLectureKeyPrecedente != maLectureKey) {
@@ -165,12 +165,13 @@ void loop() {
         } else {
           
         }
-        */
+        
         
       }
       
     }
     maLectureKeyPrecedente = maLectureKey;
+    */
 
     int maLectureKeyCool = myPbHub.digitalRead(CHAN_KEY_COOL);
 
@@ -181,7 +182,7 @@ void loop() {
         numberOfClick += 1;
         monOsc.sendInt("/numberOfClick", numberOfClick);
 
-        if (numberOfClick == 32) {
+        if (numberOfClick == 30) {
           numberOfClick = 0;
         }
         /*
@@ -222,7 +223,7 @@ void loop() {
       if (maLectureKeySubmit == 0) {
         int randomNumber = random(1200, 3000);
         int randomNumberTwo = randomNumber + 900;
-        if (numberOfClick != 12 || numberOfClick == 0){
+        if (numberOfClick != 10 || numberOfClick == 0){
           if (numberOfClick == 0) {
             monOsc.sendInt("/echec", 0);
           }
@@ -233,7 +234,7 @@ void loop() {
           monOsc.sendInt("/succes", 0);
           monOsc.sendInt("/echec", 1);
           numberOfClick = 0;
-        } else if (numberOfClick == 12) {
+        } else if (numberOfClick == 10) {
           monOsc.sendInt("/boundesStart", randomNumber);
           monOsc.sendInt("/boundesEnd", randomNumberTwo);
           monOsc.sendInt("/succes", 1);

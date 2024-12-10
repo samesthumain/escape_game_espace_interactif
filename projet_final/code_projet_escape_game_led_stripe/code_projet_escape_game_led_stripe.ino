@@ -22,6 +22,7 @@ int etatPlay;
 int numberOfClick;
 int red;
 int green;
+int newCounter = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -51,9 +52,9 @@ void setup() {
   red = 0;
   green = 100;
 
-  Wire.begin();
-  myPbHub.begin();
-  myPbHub.setPixelCount(CHAN_KEY, 1);
+  //Wire.begin();
+  //myPbHub.begin();
+  //myPbHub.setPixelCount(CHAN_KEY, 1);
 }
 
 /*
@@ -74,6 +75,18 @@ void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
     monOsc.sendInt("/compteurLight", counter);
     maBandeDel[counter] = CRGB(0, 100, 0);
     FastLED.show();
+    if (newCounter != counter) {
+      if (counter == 0 && newCounter > 0) {
+        for (int i=0; i < LONGUEUR; i++) {
+          maBandeDel[i] = CRGB(0, 0, 0);
+          FastLED.show();
+        }
+      } if (counter > 0) {
+        maBandeDel[counter] = CRGB(0, 100, 0);
+        FastLED.show();
+      }
+      newCounter = counter;
+    }
   }
   /*
   if (oscMessage.checkOscAddress("/resetClick")) {
@@ -92,87 +105,21 @@ void maReceptionMessageOsc(MicroOscMessage& oscMessage) {
 void loop() {
   // put your main code here, to run repeatedly:
   M5.update();
+
+  monOsc.onOscMessageReceived(maReceptionMessageOsc);
   
 
   if (millis() - monChronoMessage >= 25) {
     monChronoMessage = millis();
 
-    monOsc.onOscMessageReceived(maReceptionMessageOsc);
+    
 
     
 
     // à chaque 50ms
     bool maLectureBouton = M5.Btn.isPressed();
     //Serial.println(maLectureBouton);
-    }
+  }
     
-    //int maLectureAngle = analogRead(MA_BROCHE_ANGLE);
-    /*
-    Serial.print(maLectureBouton);
-    Serial.print(" ");
-    Serial.println(maLectureAngle); //fin ligne
-    */
-    //monOsc.sendInt("/bouton", maLectureBouton);
-
-/*
-    int maLectureKey = myPbHub.digitalRead(CHAN_KEY);
-
-    
-
-    if (maLectureKeyPrecedente != maLectureKey) {
-      if (maLectureKey == 0) {
-        monOsc.sendInt("/key", maLectureKey);
-        etatPlay = !etatPlay;
-        monOsc.sendInt("/numberOfClick", numberOfClick);
-
-        maBandeDel[numberOfClick] = CRGB(red, green, 0);
-        FastLED.show();
-
-        numberOfClick += 1;
-        if (numberOfClick >= random(8, 28)) {
-          red = 100;
-          green = 0;
-        }
-        if (numberOfClick == 30) {
-          for (int i=0; i < LONGUEUR; i++) {
-            maBandeDel[i] = CRGB(0, 0, 0);
-          }
-          FastLED.show();
-          numberOfClick = 0;
-          red = 0;
-          green = 100;
-        }
-        /*
-        if (etatPlay == 1) {
-          
-        } else {
-          
-        }
-        */
-        /*
-      }
-    }
-    maLectureKeyPrecedente = maLectureKey;
-*/
-  
-
-
-  
-  /*if (millis() - monChronoMessageDeux >= 600) {
-    monChronoMessageDeux = millis();
-    //lightsOn = !lightsOn;
-    
-    if (lightsOn == 0) {
-      for (int i=0; i < LONGUEUR; i++) {
-        maBandeDel[i] = CRGB(random(5, 50), 0, random(0, 20));
-      }
-      FastLED.show();
-    } else {
-      for (int i=0; i < LONGUEUR; i++) {
-        maBandeDel[i] = CRGB(0, 0, 0);
-      }
-      FastLED.show();
-    }
-  }*/
 
 }
