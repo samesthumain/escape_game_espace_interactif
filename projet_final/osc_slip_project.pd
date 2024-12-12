@@ -513,11 +513,11 @@
 #X restore 1005 598 pd sizeIsMultOf4;
 #X msg 1159 836 connect localhost 8001;
 #X obj 1004 113 netreceive -u -b 8000;
-#X msg 162 359 baud 115200 \, devicename COM7;
 #X msg 1082 377 baud 115200 \, devicename COM4;
+#X msg 162 359 baud 115200 \, devicename COM6;
 #X connect 7 0 23 0;
 #X connect 11 0 23 0;
-#X connect 14 0 104 0;
+#X connect 14 0 105 0;
 #X connect 16 0 18 0;
 #X connect 17 0 16 1;
 #X connect 20 0 51 0;
@@ -549,7 +549,7 @@
 #X connect 51 0 28 0;
 #X connect 59 0 75 0;
 #X connect 63 0 75 0;
-#X connect 66 0 105 0;
+#X connect 66 0 104 0;
 #X connect 68 0 70 0;
 #X connect 69 0 68 1;
 #X connect 72 0 102 0;
@@ -579,5 +579,5 @@
 #X connect 102 0 80 0;
 #X connect 103 0 98 0;
 #X connect 103 0 67 0;
-#X connect 104 0 23 0;
-#X connect 105 0 75 0;
+#X connect 104 0 75 0;
+#X connect 105 0 23 0;
