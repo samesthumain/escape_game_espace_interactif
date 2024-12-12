@@ -125,6 +125,9 @@ void loop() {
     //int pos = map(millimetres, 0, 1200, 0, 127);
     int amount = 0;
     monOsc.sendInt("/tof", millimetres);
+    if(millimetres < 50) {
+      monOsc.sendInt("/appear", 1);
+    }
     if(millimetres <= 300){
       monOsc.sendInt("/appear", 0);
     }else{
